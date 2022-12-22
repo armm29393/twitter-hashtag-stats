@@ -22,4 +22,4 @@ for s in config['data']:
     status += f'{config["footer"]}'
     print(status)
     print('-'*30)
-    # postTweet(status)
+    postTweet(status)
