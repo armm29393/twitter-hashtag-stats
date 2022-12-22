@@ -10,10 +10,12 @@ consumerKey = config['twitter']['api_key']
 consumerSecret = config['twitter']['api_key_secret']
 accessToken = config['twitter']['access_token']
 accessTokenSecret = config['twitter']['access_token_secret']
+bearerToken = config['twitter']['bearer_token']
 
 auth = tweepy.OAuthHandler(consumerKey, consumerSecret)
 auth.set_access_token(accessToken, accessTokenSecret)
 api = tweepy.API(auth)
+client = tweepy.Client(bearerToken)
 
 def postTweet(status):
     try:
@@ -23,18 +25,8 @@ def postTweet(status):
         print(sys.exc_info())
 
 def search(q, sd, ed):
-    tw_all, tw_tweet, tw_retweet = [], [], []
-    for i, page in enumerate(tweepy.Cursor(api.search_tweets, q=q, count=100).pages(), 1):
-        for tweet in page:
-            un = tweet.user.screen_name
-            id = tweet.id_str
-            t = tweet.text
-            c = tweet.created_at
-            d = [un, t, c, f'https://twitter.com/{un}/status/{id}']
-            if c < ed and c > sd:
-                tw_all.append(d)
-                if (not tweet.retweeted) and ('RT @' not in t):
-                    tw_tweet.append(d)
-                else:
-                    tw_retweet.append(d)
-    return tw_all, tw_tweet, tw_retweet
+    tw_all, tw_tweet, tw_retweet = 0, 0, 0
+    tw_all = client.get_recent_tweets_count(q, start_time=sd, end_time=ed)
+    tw_tweet = client.get_recent_tweets_count(f'{q} -is:retweet', start_time=sd, end_time=ed)
+    tw_retweet = client.get_recent_tweets_count(f'{q} is:retweet', start_time=sd, end_time=ed)
+    return tw_all.meta['total_tweet_count'], tw_tweet.meta['total_tweet_count'], tw_retweet.meta['total_tweet_count']
