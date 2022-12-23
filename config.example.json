@@ -9,7 +9,7 @@
     },
     {
       "title": "พีคสิค",
-      "q": "\"พีค\" AND \"สิค\"",
+      "q": "\"พีค\" \"สิค\"",
       "type": "keyword"
     }
   ],
@@ -17,6 +17,7 @@
     "api_key": "",
     "api_key_secret": "",
     "access_token": "",
-    "access_token_secret": ""
+    "access_token_secret": "",
+    "bearer_token": ""
   }
 }
